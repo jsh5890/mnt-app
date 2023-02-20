@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 //import { FaCode } from "react-icons/fa";
 import {API_KEY, API_URL, IMAGE_BASE_URL} from "../../Config";
-import MainImage from "./Sections/MainImage";
+import MainImage from "../commons/MainImage";
 import GridCards from "../commons/GridCards";
 import {Row} from "antd";
 import {useInView} from "react-intersection-observer";
@@ -11,7 +11,6 @@ function LandingPage() {
     const [MainMovieImage, setMainMovieImage] = useState(null)
     const [CurPage, setCurPage] = useState(0)
     const [ref, inView] = useInView()
-
 
     const fetchMovies = (endpoint) => {
         fetch(endpoint)
@@ -26,26 +25,24 @@ function LandingPage() {
                 }
             })
     }
+    const loadMoreItems = () => {
+        const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=ko-KR&page=${CurPage + 1}`;
+        fetchMovies(endpoint)
+    }
+
     useEffect(() => {
-        // 사용자가 마지막 요소를 보고 있고, 로딩 중이 아니라면
+        // 사용자가 마지막 요소를 보고 있으면
         if (inView) {
-            const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=ko-KR&page=${CurPage + 1}`;
-            fetchMovies(endpoint)
+            loadMoreItems()
         }
     }, [inView])
-
-
+    
     // useEffect(() => {
     //     // fetchMovies(endpoint)
     //     const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=ko-KR&page=1`;
     //     fetchMovies(endpoint)
     //
     // }, []);
-
-    const loadMoreItems = () => {
-        const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=ko-KR&page=${CurPage + 1}`;
-        fetchMovies(endpoint)
-    }
 
     return (
         <div style={{ width: '100%', margin: '0' }}>

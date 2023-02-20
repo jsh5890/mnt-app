@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react'
 //import { FaCode } from "react-icons/fa";
 import {API_KEY, API_URL, IMAGE_BASE_URL} from "../../Config";
 import MainImage from "./Sections/MainImage";
+import GridCards from "../commons/GridCards";
+import {Row} from "antd";
 
 function LandingPage() {
     const [Movies, setMovies] = useState([])
@@ -13,7 +15,8 @@ function LandingPage() {
         fetch(endpoint)
             .then(res => res.json())
             .then(res=> {
-                setMovies([res.results])
+                console.log(res)
+                setMovies([...res.results])
                 setMainMovieImage(res.results[0])
             })
 
@@ -34,26 +37,26 @@ function LandingPage() {
 
             <div style={{ width: '85%', margin: '1rem auto' }}>
 
-                <h2>Movies by latest</h2>
+                <h2>최신 영화</h2>
                 <hr />
 
-                {/* Movie Grid Cards */}
+                 {/*Movie Grid Cards*/}
 
-                {/*<Row gutter={[16, 16]} >*/}
+                <Row gutter={[16, 16]}>
 
-                {/*    {Movies && Movies.map((movie, index) => (*/}
-                {/*        <React.Fragment key={index}>*/}
-                {/*            <GridCards*/}
-                {/*                landingPage*/}
-                {/*                image={movie.poster_path ?*/}
-                {/*                    `${IMAGE_BASE_URL}w500${movie.poster_path}` : null}*/}
-                {/*                movieId={movie.id}*/}
-                {/*                movieName={movie.original_title}*/}
-                {/*            />*/}
-                {/*        </React.Fragment>*/}
-                {/*    ))}*/}
+                    {Movies && Movies.map((movie, index) => (
+                        <React.Fragment key={index}>
+                            <GridCards
+                                landingPage
+                                image={movie.poster_path ?
+                                    `${IMAGE_BASE_URL}w500${movie.poster_path}` : null}
+                                movieId={movie.id}
+                                movieName={movie.original_title}
+                            />
+                        </React.Fragment>
+                    ))}
 
-                {/*</Row>*/}
+                </Row>
 
             </div>
 

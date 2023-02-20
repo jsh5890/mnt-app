@@ -4,23 +4,48 @@ import {API_KEY, API_URL, IMAGE_BASE_URL} from "../../Config";
 import MainImage from "./Sections/MainImage";
 import GridCards from "../commons/GridCards";
 import {Row} from "antd";
+import {useInView} from "react-intersection-observer";
 
 function LandingPage() {
     const [Movies, setMovies] = useState([])
     const [MainMovieImage, setMainMovieImage] = useState(null)
+    const [CurPage, setCurPage] = useState(0)
+    const [ref, inView] = useInView()
 
-    useEffect(() => {
-        // fetchMovies(endpoint)
-        const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=ko-KR&page=1`;
+
+    const fetchMovies = (endpoint) => {
         fetch(endpoint)
             .then(res => res.json())
             .then(res=> {
                 console.log(res)
-                setMovies([...res.results])
-                setMainMovieImage(res.results[0])
+                setCurPage(res.page)
+                setMovies([...Movies, ...res.results])
+                // setMainMovieImage(null)
+                if(CurPage === 0) {
+                    setMainMovieImage(res.results[0])
+                }
             })
+    }
+    useEffect(() => {
+        // 사용자가 마지막 요소를 보고 있고, 로딩 중이 아니라면
+        if (inView) {
+            const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=ko-KR&page=${CurPage + 1}`;
+            fetchMovies(endpoint)
+        }
+    }, [inView])
 
-    }, [])
+
+    // useEffect(() => {
+    //     // fetchMovies(endpoint)
+    //     const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=ko-KR&page=1`;
+    //     fetchMovies(endpoint)
+    //
+    // }, []);
+
+    const loadMoreItems = () => {
+        const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=ko-KR&page=${CurPage + 1}`;
+        fetchMovies(endpoint)
+    }
 
     return (
         <div style={{ width: '100%', margin: '0' }}>
@@ -33,7 +58,6 @@ function LandingPage() {
                     text={MainMovieImage.overview}
                 />
             }
-
 
             <div style={{ width: '85%', margin: '1rem auto' }}>
 
@@ -60,8 +84,8 @@ function LandingPage() {
 
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                {/*<button onClick={loadMoreItems}> Load More</button>*/}
+            <div style={{ display: 'flex', justifyContent: 'center' }} ref={ref}>
+                <button onClick={loadMoreItems}> 더보기</button>
             </div>
 
         </div>

@@ -20,14 +20,16 @@ const MovieDetail = (props) => {
         fetch(endpointInfo)
             .then(res => res.json())
             .then(res => {
+                res.image = `${IMAGE_BASE_URL}w1280`+res.backdrop_path
                 console.log(res)
+                // setMovie(null)
                 setMovie(res)
             })
 
         fetch(endpointCrew)
             .then(res => res.json())
             .then(res => {
-                console.log(res)
+                // console.log(res)
                 setCasts(res.cast)
             })
     }, [])
@@ -41,7 +43,7 @@ const MovieDetail = (props) => {
             {/* Header */}
             {/*{!LoadingForMovie ?*/}
                 <MainImage
-                    image={`${IMAGE_BASE_URL}w1280${Movie.backdrop_path}`}
+                    image={Movie.image}
                     title={Movie.original_title}
                     text={Movie.overview}
                 />

@@ -16,7 +16,7 @@ const Favorite = (props) => {
         axios.post('/api/favorite/favoriteNumber', variables)
             .then(res => {
                 if(res.data.success) {
-
+                    console.log(res)
                 } else {
                     alert('숫자 정보를 가져오는데 실패 하였습니다.')
                 }
